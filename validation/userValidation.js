@@ -1,14 +1,15 @@
 const Joi = require("joi");
 require("dotenv").config();
 
+//not working
 // const passRegExpression = `(?=(?:.*[a-z]),{${process.env.PASS_LOWERCASE_CHAR}})(?=(?:.*[A-Z]),{${process.env.PASS_UPPERCASE_CHAR}})(?=(?:.*\d),{${process.env.PASS_DIGITS}})(?=(?:.*[@$!%*?&]),{${process.env.PASS_SPECIAL_CHAR}})[A-Za-z\d@$!%*?&]{${process.env.PASS_MIN_LENGTH}}$`;
-const passRegExpression = "(.*?)";
+const passRegExpression = "(.*?)";  //accept everything
 
 exports.loginValidation = async (req, res, next) => {
     try {
         const userLogIn = Joi.object().keys({
             email: Joi.string().email().required(),
-            password: Joi.string().regex(passRegExpression).required()
+            password: Joi.string().regex(RegExp(passRegExpression)).required()
         });
 
         await userLogIn.validateAsync(req.body);
@@ -26,7 +27,6 @@ exports.loginValidation = async (req, res, next) => {
 };
 
 exports.signUpValidation = async (req, res, next) => {
-    console.log(passRegExpression);
     try {
         const userSignUp = Joi.object().keys({
             firstName: Joi.string().required(),
@@ -53,8 +53,8 @@ exports.changePasswordValidation = async (req, res, next) => {
     try {
         const userPassword = Joi.object().keys({
             email: Joi.string().email().required(),
-            password: Joi.string().regex(passRegExpression).required(),
-            newPassword: Joi.string().regex(passRegExpression).required()
+            password: Joi.string().regex(RegExp(passRegExpression)).required(),
+            newPassword: Joi.string().regex(RegExp(passRegExpression)).required()
         });
 
         await userPassword.validateAsync(req.body);
