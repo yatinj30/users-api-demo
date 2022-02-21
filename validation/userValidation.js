@@ -1,9 +1,10 @@
 const Joi = require("joi");
 require("dotenv").config();
 
-//not working
+// not working
 // const passRegExpression = `(?=(?:.*[a-z]),{${process.env.PASS_LOWERCASE_CHAR}})(?=(?:.*[A-Z]),{${process.env.PASS_UPPERCASE_CHAR}})(?=(?:.*\d),{${process.env.PASS_DIGITS}})(?=(?:.*[@$!%*?&]),{${process.env.PASS_SPECIAL_CHAR}})[A-Za-z\d@$!%*?&]{${process.env.PASS_MIN_LENGTH}}$`;
-const passRegExpression = "(.*?)";  //accept everything
+// accept everything as per given criteria but it's static
+const passRegExpression = `(?=.*[0-9])(?=.*[!@#\$%\^\&*\)\(+=._-])(?=.*[A-Z])([a-zA-Z0-9]+).{8,}$`;
 
 exports.loginValidation = async (req, res, next) => {
     try {
