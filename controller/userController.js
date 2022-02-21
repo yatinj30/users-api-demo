@@ -1,34 +1,34 @@
 const path = require("path");
 const bcrypt = require("bcrypt");
+const uuid = require("uuid");
 const commonService = require("../service/commonService");
 const userService = require("../service/userService");
 
-const saltRound = process.env.SALT_ROUND || 2;
-
 exports.login = async (req, res) => {
     try {
-        let usersData = await commonService.readFile(path.join(__dirname, filePath));
+        const fullPath = path.join(__dirname, "../", process.env.FILE_PATH);
+        let usersData = await commonService.readFile(fullPath);
         if (usersData && usersData.length) {
             let user = await userService.findByEmail(usersData, req.body.email);
             if (user) {
                 if (user.isExpired) {
 
-                    res.status(401).json({
+                    return res.status(401).json({
                         success: false,
                         data: {},
                         message: "Your password is expired. Update your password!"
                     });
                 }
-                const passwordExpiresIn = process.env.PASS_EXPIRES_IN_DAYS;
+                const passwordExpiresIn = parseInt(process.env.PASS_EXPIRES_IN_DAYS);
                 let currentDateTime = Date.now();
-                let passwordIndex = user.passwords.findWhere(pass => pass.isExpired == false);
+                let passwordIndex = user.passwords.findIndex(pass => pass.isExpired == false);
                 if (passwordIndex > -1) {
                     if (currentDateTime - user.passwords[passwordIndex].createdAt > passwordExpiresIn) {
                         user.passwords[passwordIndex].isExpired = true;
-                        await commonService.writeFile(path.join(__dirname, filePath), usersData);
+                        await commonService.writeFile(fullPath, usersData);
 
-                        res.status(401).json({
-                            success: true,
+                        return res.status(401).json({
+                            success: false,
                             data: {},
                             message: "Your password is expired. Update your password!"
                         });
@@ -36,7 +36,7 @@ exports.login = async (req, res) => {
                     let passwordMatch = await bcrypt.compare(req.body.password, user.passwords[passwordIndex].password);
                     if (passwordMatch) {
 
-                        res.status(200).json({
+                        return res.status(200).json({
                             success: true,
                             data: {
                                 email: user.email
@@ -45,7 +45,7 @@ exports.login = async (req, res) => {
                         });
                     } else {
 
-                        res.status(401).json({
+                        return res.status(401).json({
                             success: false,
                             data: {},
                             message: "Username or Password Invalid."
@@ -53,7 +53,7 @@ exports.login = async (req, res) => {
                     }
                 } else {
 
-                    res.status(401).json({
+                    return res.status(401).json({
                         success: false,
                         data: {},
                         message: "Username or Password Invalid."
@@ -61,7 +61,7 @@ exports.login = async (req, res) => {
                 }
             } else {
 
-                res.status(401).json({
+                return res.status(401).json({
                     success: false,
                     data: {},
                     message: "Username or Password Invalid."
@@ -69,15 +69,16 @@ exports.login = async (req, res) => {
             }
         } else {
 
-            res.status(404).json({
+            return res.status(404).json({
                 success: false,
                 data: {},
                 message: "User not found."
             });
         }
     } catch (error) {
+        console.log(error);
 
-        res.status(400).json({
+        return res.status(400).json({
             success: false,
             data: {},
             message: "Something went wrong! Please try after sometime."
@@ -86,7 +87,55 @@ exports.login = async (req, res) => {
 }
 
 exports.signup = async (req, res) => {
+    try {
+        const fullPath = path.join(__dirname, "../", process.env.FILE_PATH);
+        let usersData = await commonService.readFile(fullPath);
+        if (usersData && usersData.length) {
+            let user = await userService.findByEmail(usersData, req.body.email);
+            if (user) {
 
+                return res.status(401).json({
+                    success: false,
+                    data: {},
+                    message: "User already registed! Try to login."
+                });
+            }
+        }
+        if (usersData == null) usersData = [];
+        const saltRound = process.env.SALT_ROUND || 2;
+        let userData = {
+            "_id": uuid.v1(),
+            "firstName": req.body.firstName,
+            "lastName": req.body.lastName,
+            "email": req.body.email,
+            "passwords": [
+                {
+                    "_id": uuid.v1(),
+                    "password": bcrypt.hashSync(req.body.password, parseInt(saltRound)),
+                    "createdAt": Date.now(),
+                    "isExpired": false
+                }
+            ]
+        }
+        usersData.push(userData);
+        await commonService.writeFile(fullPath, usersData);
+
+        return res.status(200).json({
+            success: true,
+            data: {
+                email: req.body.email
+            },
+            message: "User Registered."
+        });
+    } catch (error) {
+        console.log(error);
+
+        return res.status(400).json({
+            success: false,
+            data: {},
+            message: "Something went wrong! Please try after sometime."
+        });
+    }
 }
 
 exports.changePassword = async (req, res) => {

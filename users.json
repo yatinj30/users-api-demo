@@ -1,21 +1,15 @@
 [
     {
-        "_id": 1,
-        "firstName": "Yatinj",
-        "lastName": "Sutariya",
-        "email": "yatinjpatel30@gmail.com",
+        "_id": "79812ae0-9314-11ec-971c-e97938ba4d00",
+        "firstName": "yatinj",
+        "lastName": "sutariya",
+        "email": "yatinj@gmail.com",
         "passwords": [
             {
-                "_id": 1,
-                "password": "",
-                "createdAt": "",
+                "_id": "79812ae1-9314-11ec-971c-e97938ba4d00",
+                "password": "$2b$05$5GQC5D2GVJBHTKnwxpNQAOebFE1qf1pLC.nbipOKzmyaUrrg2DX/6",
+                "createdAt": 1613911805000,
                 "isExpired": true
-            },
-            {
-                "_id": 2,
-                "password": "",
-                "createdAt": "",
-                "isExpired": false
             }
         ]
     }
