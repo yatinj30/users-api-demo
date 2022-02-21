@@ -10,6 +10,12 @@
                 "password": "$2b$05$5GQC5D2GVJBHTKnwxpNQAOebFE1qf1pLC.nbipOKzmyaUrrg2DX/6",
                 "createdAt": 1613911805000,
                 "isExpired": true
+            },
+            {
+                "_id": "0160b2f0-931a-11ec-b0ef-b3f066337c96",
+                "password": "$2b$05$0juo.T64eFrx59zYTbv3QuhleyXd6kNcbopihi09Ha7u9eM.Sgroa",
+                "createdAt": 1645450044321,
+                "isExpired": false
             }
         ]
     }
