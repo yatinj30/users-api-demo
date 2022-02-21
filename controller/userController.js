@@ -169,7 +169,7 @@ exports.changePassword = async (req, res) => {
             let isNewPasswordSameAsOld = false;
             for (let i = user.passwords.length - 1; i >= 0; i--) {
                 j++;
-                if (j == 4) break;
+                if (j == process.env.PASS_NOT_RECENTLY_USED + 1) break;
                 let passwordMatch = await bcrypt.compare(req.body.newPassword, user.passwords[i].password);
                 if (passwordMatch) {
                     isNewPasswordSameAsOld = true;
