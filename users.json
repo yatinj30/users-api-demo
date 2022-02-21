@@ -1,0 +1,22 @@
+[
+    {
+        "_id": 1,
+        "firstName": "Yatinj",
+        "lastName": "Sutariya",
+        "email": "yatinjpatel30@gmail.com",
+        "passwords": [
+            {
+                "_id": 1,
+                "password": "",
+                "createdAt": "",
+                "isExpired": true
+            },
+            {
+                "_id": 2,
+                "password": "",
+                "createdAt": "",
+                "isExpired": false
+            }
+        ]
+    }
+]
